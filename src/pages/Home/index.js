@@ -28,6 +28,7 @@ import danDo from '../../assets/images/galleryContent/danDo.png'
 import { useEffect, useState } from 'react';
 import { Dialog } from '@material-ui/core';
 import GalleryModal from '../../component/GalleryModal';
+import { getHighestDiscountAPI } from '../../api/shop';
 
 
 const cx = classNames.bind(styles);
@@ -47,13 +48,14 @@ const Mask = ({ gallery,handleOpenModal }) => {
 function Home() {
     const [productsHotDeal, setProductsHotDeal] = useState([]);
 
-    // useEffect(() => {
-    //     fetchData();
-    // }, [])
+    console.log(productsHotDeal);
+    useEffect(() => {
+        fetchData();
+    }, [])
 
-    // const fetchData = async() => {
-    //     setProductsHotDeal(await getProductsHotDealsAPI());
-    // }
+    const fetchData = async() => {
+        setProductsHotDeal((await getHighestDiscountAPI()).data);
+    }
     
     const categoryOptions = [
         {title: 'đồ gốm', categoryImg: gomCategory, pathTo: '/shop'},

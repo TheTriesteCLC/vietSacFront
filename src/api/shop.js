@@ -19,6 +19,7 @@ const END_POINT = {
     PRODUCTS_ALL: `${API_VERSION}/Product`,
     CATEGORY_ALL: `${API_VERSION}/Category`,
     RELATED_PRODUCTS: `${API_VERSION}/Product/category`,
+    HIGHEST_DISCOUNT: `${API_VERSION}/Product/highest-discount`
 }
 
 export const getProductsAllAPI = () => {
@@ -40,4 +41,9 @@ export const getRelatedProductsAPI = (categoryID) => {
 export const getCategoryAllAPI = () => {
     // return axiosSite.get(`${END_POINT.HOME}`)
     return axiosSite.get(`${END_POINT.CATEGORY_ALL}`);
+}
+
+export const getHighestDiscountAPI = () => {
+    // return axiosSite.get(`${END_POINT.HOME}`)
+    return axiosSite.get(`${END_POINT.HIGHEST_DISCOUNT}`);
 }

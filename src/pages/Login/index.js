@@ -18,21 +18,23 @@ const Login = () => {
     const { setToken, setUserID } = useAuth();
 
     async function signInUser(userInfo) {
-        await postSignInUser(userInfo)
-            .then(res => {
-                console.log(res);
-                if(res.statusCode === 0) {
-                    document.querySelector('#signin-noti').innerText = 'Sai thông tin đăng nhập, vui lòng thử lại';
-                    document.querySelector(`.${cx('login-password')}`).value = '';
-                } else {
-                    navigate('/home');
-                    setToken(res.data['token']);
-                    setUserID(res.data['responseUserModel'].id)
-                }
-            })
-            .catch(res => {
-                navigate('/error');
-            })
+        try {
+          const  res =  await postSignInUser(userInfo)
+            console.log(res.data);
+            if(res.statusCode === 0) {
+                document.querySelector('#signin-noti').innerText = 'Sai thông tin đăng nhập, vui lòng thử lại';
+                document.querySelector(`.${cx('login-password')}`).value = '';
+            } else {
+                const { token, responseUserModel: { id: userID } = {} } = res.data
+                setToken(token);
+                setUserID(userID)
+                navigate('/home');
+            }
+        } catch (error) {
+            navigate('/error');
+            
+        }
+
     }
     return (
     <Formik

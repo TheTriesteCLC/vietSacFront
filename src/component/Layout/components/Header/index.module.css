@@ -45,9 +45,9 @@
 
 .navigation {
     z-index: 100;
-    -webkit-transform:translateY(-1000px);
-    -moz-transform:translateY(-1000px);
-    transform:translateY(-1200px);
+    -webkit-transform:translateY(-1500px);
+    -moz-transform:translateY(-1500px);
+    transform:translateY(-1800px);
     -webkit-transition: all 0.5s ease-in-out;
     -moz-transition: all 0.5s ease-in-out;
     transition: all 0.5s ease-in-out;
@@ -116,9 +116,9 @@
 }
 
 .close-nav {
-    -webkit-transform:translateY(-1000px);
-    -moz-transform:translateY(-1000px);
-    transform:translateY(-1200px);
+    -webkit-transform:translateY(-1500px);
+    -moz-transform:translateY(-1500px);
+    transform:translateY(-1800px);
     -webkit-transition: all 0.5s ease-in-out;
     -moz-transition: all 0.5s ease-in-out;
     transition: all 0.5s ease-in-out;

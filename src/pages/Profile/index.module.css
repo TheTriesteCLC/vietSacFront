@@ -12,6 +12,11 @@
     max-width: 50%;
 }
 
+.user-info h1,
+.user-info p {
+    word-wrap: break-word;
+}
+
 .user-info img {
     object-fit: cover;
     object-position: top center;

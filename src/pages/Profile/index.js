@@ -44,7 +44,7 @@ function Profile() {
     const navigate = useNavigate();
 
     const [userInfo, setUserInfo] = useState({});
-    const { userID } = useAuth();
+    const { userID, setToken, setUserID } = useAuth();
     console.log(userInfo);
 
     const fetchData = async() => {
@@ -61,14 +61,11 @@ function Profile() {
         fetchData();
     }, [])
 
-    const cityList = [
-        {
-            value: 'HCM', text: 'TP Hồ Chí Minh'
-        },
-        {
-            value: 'HN', text: 'TP Hà Nội'
-        }
-    ]
+    const handleLogout = () => {
+        setToken('');
+        setUserID('');
+        navigate('/home');
+    }
 
     const cart = [
         {productName: 'Chén', img: chen, price: '325.000', discount: '0', quant: 1},
@@ -107,7 +104,7 @@ function Profile() {
                     <button className={`${cx('switch-tab-btn')} ${cx('chosen-tab')} mb-4`} id='user-info-btn' onClick={switchTab}>Tài khoản của tôi</button>
                     <button className={`${cx('switch-tab-btn')}`} id='checkout-btn' onClick={switchTab}>Đơn hàng </button>
                 </div>
-                <button className={`btn-exlarge prim-btn ${cx('logout-btn')} mt-5`}>Đăng xuất</button>
+                <button className={`btn-exlarge prim-btn ${cx('logout-btn')} mt-5`} onClick={handleLogout}>Đăng xuất</button>
             </div>
             <Formik
             // initialValues={name}

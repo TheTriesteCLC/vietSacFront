@@ -9,13 +9,21 @@ import logoSmall from '../../../../assets/logo/logoSmall.png'
 import closeIcon from '../../../../assets/icon/close.svg'
 import navBackground from '../../../../assets/images/headerBackground.png';
 
-import { useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import Cart from '../Cart';
 import { Helmet } from 'react-helmet';
 
 const cx = classNames.bind(styles);
 
 function Header({isTransparent}) {
+    const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+    // strict work with localStorage: 
+    setTimeout(() => {
+        const isLoggedIn = !!localStorage.getItem('userID')
+        setIsLoggedIn(isLoggedIn)
+    }, 10);
+
     const navigationOption = [ 
         { title: 'home', link: '/home', current: true},
         { title: 'sản phẩm', link: '/shop', current: false},
@@ -63,30 +71,22 @@ function Header({isTransparent}) {
                     <p className={`${cx('header-logo-text')}`}>Việt Sắc</p>
                 </a>
             </div>
-            {
-                !isTransparent ? (
-                    <div className={`${cx('header-user-section')} d-flex justify-content-center align-items-center flex-row`}>
-                        <a href='/user'>
-                            <div className='d-flex justify-content-center align-items-center flex-row'>
-                                <p className={`${cx('user-title')} m-0 me-3`}>Say hi to us</p>
-                                <img className={`${cx('header-icon')}`} src={userIcon} alt="User"/>
-                            </div>
-                        </a>
-                        <img className={`mx-4`} src={line} alt="Line"/>
-                        <Cart/>
+            
+
+            <div className={`${cx('header-user-section')} d-flex justify-content-center align-items-center flex-row`}>
+                <a href='/user'>
+                    <div className='d-flex justify-content-center align-items-center flex-row'>
+                        <p className={`${cx('user-title')} m-0 me-3`}>Say hi to us</p>
+                        <img className={`${cx('header-icon')}`} src={userIcon} alt="User"/>
                     </div>
-                )
-                :(
-                    <div className={`${cx('header-user-section')} d-flex justify-content-center align-items-center flex-row`}>
-                        <a href='/user'>
-                            <div className='d-flex justify-content-center align-items-center flex-row'>
-                                <p className={`${cx('user-title')} m-0 me-3`}>Say hi to us</p>
-                                <img className={`${cx('header-icon')}`} src={userIcon} alt="User"/>
-                            </div>
-                        </a>
-                    </div>
-                )
-            }
+                </a>
+                {isLoggedIn ? <><img className={`mx-4`} src={line} alt="Line"/>
+                <Cart/></> : <></>}
+                
+            </div>
+
+                
+            
         </div>
         <div className={cx('navigation')}>
             <div className={`${cx('wrapper-nav')}`}>

@@ -15,12 +15,19 @@ import ProductModal from "../../component/ProductModal";
 import RelatedProductItem from "../../component/RelatedProductItem";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getProductDetailAPI, getProductsAllAPI, getRelatedProductsAPI } from "../../api/shop";
-import { filter } from "lodash";
 
 const cx = classNames.bind(styles);
 
 function ProductDetail() {
     const productID = useLocation().pathname.split('/').at(-1);
+
+    const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+    // strict work with localStorage: 
+    setTimeout(() => {
+        const isLoggedIn = !!localStorage.getItem('userID')
+        setIsLoggedIn(isLoggedIn)
+    }, 10);
 
     const [product, setProduct] = useState({});
     const [relatedProducts, setRelatedProducts] = useState([]);
@@ -53,12 +60,11 @@ function ProductDetail() {
     }, [])
 
     const numberWithCommas = (x) => {
-
         return floor(x).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
 
     const [openModal, setOpenModal] = useState(false);
- 
+
     const handleCloseModal = () => {
         setOpenModal(false);
     };
@@ -66,6 +72,14 @@ function ProductDetail() {
     const handleOpenModal = () => {
         setOpenModal(true);
     };
+
+    const handleAddToCart = () => {
+        if(!isLoggedIn) {
+            navigate('/login');
+        }else {
+            console.log("::::addToCart");
+        }
+    }
 
     const breakPoints = [
         { width: 1, itemsToShow: 1, itemsToScroll: 1 },
@@ -129,7 +143,7 @@ function ProductDetail() {
                     </div>
                     <button className={`btn-exlarge sec-btn w-100 my-3`} onClick={handleOpenModal}>Thiết kế cho riêng bạn</button>
                     <div className="d-flex justify-content-between my-3">
-                        <button className={`${cx('add-btn')} btn-large`}><span>Thêm vào giỏ hàng</span></button>
+                        <button className={`${cx('add-btn')} btn-large`} onClick={handleAddToCart}><span>Thêm vào giỏ hàng</span></button>
                         <button className={`${cx('buy-btn')} btn-large prim-btn`}>Mua ngay</button>
                     </div>
                 </div>

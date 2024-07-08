@@ -10,11 +10,20 @@ const AuthProvider = ({ children }) => {
 
   // Function to set the authentication token
   const setToken = (newToken) => {
-    setToken_(newToken);
+    if(!newToken) {
+      localStorage.removeItem('token');
+    }else {
+      setToken_(newToken);
+    }
   };
 
   const setUserID = (newUserID) => {
-    setUserID_(newUserID);
+    if(!newUserID) {
+      localStorage.removeItem('userID');
+    }else {
+      setUserID_(newUserID);
+    }
+    
   };
 
   useEffect(() => {
@@ -25,7 +34,7 @@ const AuthProvider = ({ children }) => {
     } else {
       delete axios.defaults.headers.common["Authorization"];
       localStorage.removeItem('token');
-      localStorage.removeItem('userID')
+      localStorage.removeItem('userID');
     }
   }, [token, userID]);
 
