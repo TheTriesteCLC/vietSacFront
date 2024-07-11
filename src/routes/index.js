@@ -72,10 +72,24 @@ const Routes = () => {
         </NoCompLayout>
       },
       {
-        path: "/shop",
+        path: "/shop/do-gom",
         element: 
         <NoFooterLayout>
-          <Shop/>
+          <Shop pageTitle={'Đồ gốm'}/>
+        </NoFooterLayout>
+      },
+      {
+        path: "/shop/do-tho-cam",
+        element: 
+        <NoFooterLayout>
+          <Shop pageTitle={'Đồ thổ cẩm'}/>
+        </NoFooterLayout>
+      },
+      {
+        path: "/shop/do-dan-lat",
+        element: 
+        <NoFooterLayout>
+          <Shop pageTitle={'Đồ đan lát'} />
         </NoFooterLayout>
       },
       {
@@ -83,6 +97,13 @@ const Routes = () => {
         element: 
         <NoFooterLayout>
           <ProductDetail/>
+        </NoFooterLayout>
+      },
+      {
+        path: "/shop",
+        element: 
+        <NoFooterLayout>
+          <Shop pageTitle={"Tất cả"}/>
         </NoFooterLayout>
       },
       {

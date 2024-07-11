@@ -3,6 +3,7 @@
 .wrapper {
     display: inline-block;
     padding: 0 10px 32px 10px;
+    max-width: 240px;
 }
 
 .section-product-img:hover {

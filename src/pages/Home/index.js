@@ -29,38 +29,102 @@ import { useEffect, useState } from 'react';
 import { Dialog } from '@material-ui/core';
 import GalleryModal from '../../component/GalleryModal';
 import { getHighestDiscountAPI } from '../../api/shop';
+import { getBlogsAllAPI } from '../../api/shop';
+import { redirect, useNavigate } from 'react-router-dom';
 
 
 const cx = classNames.bind(styles);
 
-const Mask = ({ gallery,handleOpenModal }) => {
+const Gallery = ({ gallery, blog }) => {
     const maskImg = new Image();
     maskImg.src = gallery.mask;
 
+    const [openModal, setOpenModal] = useState(false);
+
+    const handleCloseModal = () => {
+        setOpenModal(false);
+    };
+ 
+    const handleOpenModal = () => {
+        setOpenModal(true);
+    };
+
     return (
+        <>
         <div className={`${cx('gallery-img-wrapper')} bg-image position-absolute`} style={gallery.location} onClick={handleOpenModal}>
             <img src={gallery.galleryImg} style={gallery.mask} />
             <div className="mask" style={gallery.mask}></div>
         </div>
+        <Dialog  
+        open={openModal}
+        onClose={handleCloseModal}
+        maxWidth={'lg'}
+        >
+            <div className={`${cx('section-modal')} position-relative`}>
+                <img src={iconClose} className={`${cx('close-modal-btn')} position-absolute`} onClick={handleCloseModal}/>
+                <GalleryModal title={blog.title} imgParagraph={blog.pictureLink} paragraphs={[blog.description]}/>
+            </div>
+            
+        </Dialog >
+        </>
     );
 }
 
+const galleries = [
+    gallery1,
+    gallery2,
+    gallery3,
+    gallery4,
+    gallery5,
+    gallery6,
+    gallery7,
+    gallery8,
+    gallery9,
+    gallery10,
+    gallery11,
+    gallery12,
+    gallery13,
+];
+
 function Home() {
+    const navigate = useNavigate();
+    let [blogs, setBlogs] = useState([]);
+
     const [productsHotDeal, setProductsHotDeal] = useState([]);
 
-    console.log(productsHotDeal);
     useEffect(() => {
         fetchData();
     }, [])
 
     const fetchData = async() => {
-        setProductsHotDeal((await getHighestDiscountAPI()).data);
+        try {
+            const productHotDeal = (await getHighestDiscountAPI()).data[0];
+            setProductsHotDeal([productHotDeal, productHotDeal, productHotDeal]);
+            const blogs = (await getBlogsAllAPI()).data;
+            const galleriesAndBlogs = []
+            
+            for(let i = 0; i < blogs.length; ++i) {
+                const newBlog = {
+                    pictureLink: blogs.at(i).pictureLink,
+                    title: blogs.at(i).description.split('\n')[0],
+                    description: blogs.at(i).description
+                }
+                galleriesAndBlogs.push({
+                    gallery: galleries.at(i),
+                    blog:  newBlog
+                })
+            }
+            setBlogs(galleriesAndBlogs);
+        }
+        catch {
+            navigate('/error');
+        }
     }
     
     const categoryOptions = [
-        {title: 'đồ gốm', categoryImg: gomCategory, pathTo: '/shop'},
-        {title: 'đồ thổ cẩm', categoryImg: thocamCategory, pathTo: '/shop'},
-        {title: 'đồ đan lát', categoryImg: danlatCategory, pathTo: '/shop'},
+        {title: 'đồ gốm', categoryImg: gomCategory, pathTo: '/shop/do-gom'},
+        {title: 'đồ thổ cẩm', categoryImg: thocamCategory, pathTo: '/shop/do-tho-cam'},
+        {title: 'đồ đan lát', categoryImg: danlatCategory, pathTo: '/shop/do-dan-lat'},
     ]
 
     const [openModal, setOpenModal] = useState(false);
@@ -103,40 +167,21 @@ function Home() {
                     <h1>hot deal</h1>
                 </div>
                 <div className={`${cx('hot-deal')} w-100 d-flex flex-row justify-content-around`}>
-                    {productsHotDeal?.map((product) => (<ProductCard product={product}/>))}
+                    {productsHotDeal?.map((product, index) => (<ProductCard product={product} key={index}/>))}
                 </div>
             </div>
             <div className={`${cx('section-gallery-wrapper')}`} id='gallery'>
                 <div className={`${cx('section-gallery')}`}>
                     <h1>gallery</h1>
                     <div className='position-relative'>
-                        <Mask gallery={gallery1} handleOpenModal={handleOpenModal} ></Mask>
-                        <Mask gallery={gallery2} handleOpenModal={handleOpenModal} ></Mask>
-                        <Mask gallery={gallery3} handleOpenModal={handleOpenModal} ></Mask>
-                        <Mask gallery={gallery4} handleOpenModal={handleOpenModal} ></Mask>
-                        <Mask gallery={gallery5} handleOpenModal={handleOpenModal} ></Mask>
-                        <Mask gallery={gallery6} handleOpenModal={handleOpenModal} ></Mask>
-                        <Mask gallery={gallery7} handleOpenModal={handleOpenModal} ></Mask>
-                        <Mask gallery={gallery8} handleOpenModal={handleOpenModal} ></Mask>
-                        <Mask gallery={gallery9} handleOpenModal={handleOpenModal} ></Mask>
-                        <Mask gallery={gallery10} handleOpenModal={handleOpenModal} ></Mask>
-                        <Mask gallery={gallery11} handleOpenModal={handleOpenModal} ></Mask>
-                        <Mask gallery={gallery12} handleOpenModal={handleOpenModal} ></Mask>
-                        <Mask gallery={gallery13} handleOpenModal={handleOpenModal} ></Mask>
+                        {blogs.map((blog, index) => {
+                            return (
+                                <Gallery gallery={blog.gallery} blog={blog.blog} handleOpenModal={handleOpenModal} key={index}></Gallery>
+                            )
+                        })}
                     </div>
                 </div>
             </div>
-            <Dialog  
-            open={openModal}
-            onClose={handleCloseModal}
-            maxWidth={'lg'}
-            >
-                 <div className={`${cx('section-modal')} position-relative`}>
-                    <img src={iconClose} className={`${cx('close-modal-btn')} position-absolute`} onClick={handleCloseModal}/>
-                    <GalleryModal title={`Làng nghề đan đó 200 tuổi ở Hưng Yên`} imgParagraph={danDo} paragraphs={[`Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centurie`,`Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centurie`]}/>
-                </div>
-                
-            </Dialog >
         </div>
     )
 }

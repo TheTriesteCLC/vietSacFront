@@ -14,31 +14,40 @@ import chen from '../../assets/images/product/chen.png'
 import ghe from '../../assets/images/product/ghe.png'
 import vi from '../../assets/images/product/vi.png'
 import tui from '../../assets/images/product/tui.png'
-import { getProductsAllAPI, getCategoryAllAPI } from '../../api/shop';
+import { getProductsByBrandAPI, getCategoryByBrandAPI, getProductsAllAPI, getCategoryAllAPI } from '../../api/shop';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
-function Shop() {
+function Shop({pageTitle}) {
     const [productsAll, setProductsAll] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [categories, setCategories] = useState([]);
 
     const navigate = useNavigate();
     const fetchData = async() => {
-        await getProductsAllAPI()
-        .then(async res => {
-            setProductsAll(res.data);
-            setFilteredProducts(res.data);
-            return await getCategoryAllAPI();
-        })
-        .then(async res => {
-            setCategories(res.data);
-        })
-        .catch(res => {
+        try {
+            if(pageTitle === "Tất cả") {
+                const productsByBrand = await getProductsAllAPI();
+                setProductsAll(productsByBrand.data);
+                setFilteredProducts(productsByBrand.data);
+                const brandCategory = await getCategoryAllAPI();
+                console.log("brandCategory", brandCategory);
+                setCategories(brandCategory.data);
+            }
+            else {
+                const productsByBrand = await getProductsByBrandAPI(pageTitle);
+                setProductsAll(productsByBrand);
+                setFilteredProducts(productsByBrand);
+                const brandCategory = await getCategoryByBrandAPI(pageTitle);
+                console.log("brandCategory", brandCategory);
+                setCategories(brandCategory);
+            }
+        }
+        catch(error) {
             navigate('/error');
-        })
+        }
     }
 
     useEffect(() => {
@@ -90,7 +99,7 @@ function Shop() {
                 </div>
             </div>
             <div className={`${cx('page-title')}`}>
-                <h1>Đồ gốm</h1>
+                <h1>{pageTitle}</h1>
             </div>
             <div className={`${cx('section-products')} d-flex justify-content-between`}>
                 <div className={`${cx('filter-container')}`}>
