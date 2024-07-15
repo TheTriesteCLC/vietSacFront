@@ -135,7 +135,9 @@ function ProductDetail() {
                         </div>
                     </div>
                     <div className={`${cx('product-price')}`}>
-                        <h2>{numberWithCommas((parseInt(product.price) * (1 - parseFloat(product.discount)/100)))} VND</h2>
+                        <h2>{numberWithCommas(isNaN(parseInt(product.price) * 
+                        (1 - parseFloat(product.discount)/100)) ? 0 : (parseInt(product.price) * 
+                        (1 - parseFloat(product.discount)/100)))} VND</h2>
                     </div>
                     <div className={`${cx('product-quant')} my-4`}>
                         <label>Số lượng</label>

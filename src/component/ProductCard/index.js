@@ -9,14 +9,15 @@ function ProductCard({product}) {
 
         return floor(x).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
-    product.priceAfter = numberWithCommas((parseInt(product.price) * 
+    product.priceAfter = numberWithCommas(isNaN(parseInt(product.price) * 
+    (1 - parseFloat(product.discount)/100)) ? 0 : (parseInt(product.price) * 
     (1 - parseFloat(product.discount)/100)));
 
     return (
         <div className={`${cx('wrapper')}`}>
             <a href={`/shop/${product.id}`}>
                 <div className={`${cx('section-product-img')}`}>
-                        <img src={product.image}/>
+                    <img src={product.image}/>
                 </div>
             </a>
             <div className={`${cx('section-product-info')}`}>

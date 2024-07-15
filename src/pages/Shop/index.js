@@ -46,7 +46,7 @@ function Shop({pageTitle}) {
             }
         }
         catch(error) {
-            navigate('/error');
+            // navigate('/error');
         }
     }
 

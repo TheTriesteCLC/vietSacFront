@@ -7,9 +7,10 @@ const cx = classNames.bind(styles);
 function ProductItem({product}) {
     const numberWithCommas = (x) => {
 
-        return floor(x).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        return (floor(x).toString().replace(/\B(?=(\d{3})+(?!\d))/g, "."));
     }
-    product.priceAfter = numberWithCommas((parseInt(product.price) * 
+    product.priceAfter = numberWithCommas(isNaN(parseInt(product.price) * 
+    (1 - parseFloat(product.discount)/100)) ? 0 : (parseInt(product.price) * 
     (1 - parseFloat(product.discount)/100)));
 
 // function ProductItem() {

@@ -98,20 +98,15 @@ function Home() {
 
     const fetchData = async() => {
         try {
-            const productHotDeal = (await getHighestDiscountAPI()).data[0];
-            setProductsHotDeal([productHotDeal, productHotDeal, productHotDeal]);
+            const productHotDeal = (await getHighestDiscountAPI()).data;
+            setProductsHotDeal(productHotDeal);
             const blogs = (await getBlogsAllAPI()).data;
             const galleriesAndBlogs = []
             
             for(let i = 0; i < blogs.length; ++i) {
-                const newBlog = {
-                    pictureLink: blogs.at(i).pictureLink,
-                    title: blogs.at(i).description.split('\n')[0],
-                    description: blogs.at(i).description
-                }
                 galleriesAndBlogs.push({
                     gallery: galleries.at(i),
-                    blog:  newBlog
+                    blog:  blogs.at(i)
                 })
             }
             setBlogs(galleriesAndBlogs);

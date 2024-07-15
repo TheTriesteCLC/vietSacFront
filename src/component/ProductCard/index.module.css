@@ -18,7 +18,7 @@
 }
 
 .section-product-img img {
-
+    max-width: 325px;
 }
 
 .small-red-box {
