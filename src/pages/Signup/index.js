@@ -50,7 +50,7 @@ const Signup = () => {
       }
       await postSignUpUser(sendUserInfo)
         .then(res => {
-          if(res.statusCode !== 200) {
+          if(res.statusCode !== 201) {
             alert(res.messageError);
           }else {
             alert("Create new account successfully!!!");

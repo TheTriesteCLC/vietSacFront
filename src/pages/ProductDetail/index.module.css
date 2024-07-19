@@ -55,6 +55,10 @@
     border-bottom: #dad7d4 solid 2px ;
 }
 
+.product-title {
+    max-width: 600px;
+}
+
 .product-price {
     margin: 20px 0;
     padding: 10px 0;

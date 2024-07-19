@@ -19,8 +19,8 @@ const Login = () => {
 
     async function signInUser(userInfo) {
         try {
-          const  res =  await postSignInUser(userInfo)
-            console.log(res.data);
+            const res =  await postSignInUser(userInfo);
+            // console.log(res.data);
             if(res.statusCode === 0) {
                 document.querySelector('#signin-noti').innerText = 'Sai thông tin đăng nhập, vui lòng thử lại';
                 document.querySelector(`.${cx('login-password')}`).value = '';
@@ -44,7 +44,7 @@ const Login = () => {
         }}
         onSubmit={(values) => {
         signInUser({
-            'userName': values.username,
+            'email': values.username,
             'password': values.password
         });
       }}

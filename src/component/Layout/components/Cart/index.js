@@ -10,13 +10,19 @@ import close from '../../../../assets/icon/closeRed.svg'
 
 import classNames from 'classnames/bind';
 import styles from './index.module.css';
+import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { floor } from 'lodash';
+import { getAllCarts } from '../../../../api/site';
+import { getProductDetailAPI } from '../../../../api/shop';
+import { useAuth } from '../../../../provider';
 // import { getUserCartAPI } from '../../../../api/site';
 
 const cx = classNames.bind(styles);
 
 function Cart() {
+    const navigate = useNavigate();
+
     const numberWithCommas = (x) => {
 
         return floor(x).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -28,32 +34,30 @@ function Cart() {
         setOpen(newOpen);
     };
 
-    const [cart, setCart] = useState([]);
+    const handleDelete = (cartID) => {
+        console.log(cartID);
+        addToCart({})
+        setCart(cart.filter((cartItem) => cartItem.id !== cartID))
+    }
 
-    // const fetchData = async() => {
-    //     setCart(await getUserCartAPI());
-    // }
-
-    // useEffect(() => {
-    //     fetchData();
-    // }, [])
+    const { userID, setToken, setUserID, cart, setCart, addToCart } = useAuth();
 
     const CartProductItem = ({product}) => {
         return (
         <div className={`${cx('product-wrapper')} d-flex justify-content-between`}>
             <div className={`${cx('product-img')}`}>
-                <img src={product.productImg}/>
+                <img src={product.image}/>
             </div>
             <div className={`${cx('product-info')} d-flex flex-column`}>
-                <h4>{product.productName}</h4>
-                <h4>x {product.quant}</h4>
+                <h4>{product.name}</h4>
+                <h4>x {product.quantity}</h4>
                 <div className={`${cx('product-price')}`}>
-                    {numberWithCommas((parseInt(product.price) * 
-                    (1 - parseFloat(product.discount === 0 ? '100' : product.discount)/100)) * 1000)} VND
+                    {numberWithCommas((product.price * 
+                    (1 - parseFloat(product.discount)/100)))} VND
                 </div>
             </div>
             <div className={`${cx('product-delete')}`}>
-                <img src={trash}/>
+                <img src={trash} onClick={() => {handleDelete(product.id, product.productId)}}/>
             </div>
         </div>)
     }
@@ -66,7 +70,7 @@ function Cart() {
                     <h2 className={`mb-2`}>Giỏ hàng</h2>
                     <div className={`${cx('small-red-box')}`}></div>
                 </div>
-                {cart.map((product) => (<CartProductItem product={product}/>))}
+                {cart?.map((product) => (<CartProductItem product={product}/>))}
                 <div className={`${cx('cart-footer')}`}>
                     <a href='/checkout'>
                         <button className={`btn-small prim-btn w-100 mb-3`}>

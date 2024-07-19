@@ -12,11 +12,13 @@ import navBackground from '../../../../assets/images/headerBackground.png';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import Cart from '../Cart';
 import { Helmet } from 'react-helmet';
+import { useAuth } from '../../../../provider';
 
 const cx = classNames.bind(styles);
 
 function Header({isTransparent}) {
     const [isLoggedIn, setIsLoggedIn] = useState(false)
+    const { userID, setToken, setUserID } = useAuth();
 
     // strict work with localStorage: 
     setTimeout(() => {
@@ -81,7 +83,7 @@ function Header({isTransparent}) {
                     </div>
                 </a>
                 {isLoggedIn ? <><img className={`mx-4`} src={line} alt="Line"/>
-                <Cart/></> : <></>}
+                <Cart userID={userID}/></> : <></>}
                 
             </div>
 

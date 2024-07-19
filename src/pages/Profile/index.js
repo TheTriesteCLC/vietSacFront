@@ -13,8 +13,9 @@ import { Formik } from "formik";
 import { Button } from "antd";
 import { Input } from "formik-antd";
 import { floor } from 'lodash';
-import { getUserInfo } from '../../api/site';
+import { getUserInfo, getAllCarts } from '../../api/site';
 import { useAuth } from '../../provider';
+import { getProductDetailAPI } from '../../api/shop';
 
 const cx = classNames.bind(styles);
 
@@ -23,18 +24,18 @@ const numberWithCommas = (x) => {
     return floor(x).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
-const CartProductItem = ({product}) => {
+const OrderItem = ({product}) => {
     return (
     <div className={`${cx('product-wrapper')} mb-5 d-flex`}>
         <div className={`${cx('product-img')}`}>
-            <img src={product.img}/>
+            <img src={product.image}/>
         </div>
         <div className={`${cx('product-info')} ms-4 d-flex flex-column justify-content-center`}>
-            <h5>{product.productName}</h5>
-            <h5>x {product.quant}</h5>
+            <h5>{product.name}</h5>
+            <h5>x {product.quantity}</h5>
             <h5 className={`${cx('product-price')}`}>
-                {numberWithCommas((parseInt(product.price) * 
-                (1 - parseFloat(product.discount === 0 ? '100' : product.discount)/100)) * 1000)} VND
+                {`Đơn giá: ${numberWithCommas((product.price * 
+                (1 - parseFloat(product.discount)/100)))}`} VND
             </h5>
         </div>
     </div>)
@@ -44,17 +45,30 @@ function Profile() {
     const navigate = useNavigate();
 
     const [userInfo, setUserInfo] = useState({});
-    const { userID, setToken, setUserID } = useAuth();
-    console.log(userInfo);
+    const [userCart, setUserCart] = useState([]);
+    const { userID, setToken, setUserID, cart, setCart } = useAuth();
 
     const fetchData = async() => {
-        await getUserInfo(userID)
-            .then((res) => {
-                setUserInfo(res.data);
-            })
-            .catch(res => {
-                navigate('/error');
-            })
+        try {
+            const userInfoData = (await getUserInfo(userID)).data;
+            setUserInfo(userInfoData);
+            const allCartsData = await getAllCarts();
+            let userCart = allCartsData.filter((cart) => cart.userId === userID);
+            userCart = await Promise.all(userCart.map(async (cart) => {
+                const product = (await getProductDetailAPI(cart.productId)).data;
+                return {
+                    ...cart,
+                    image: product.image,
+                    discount: product.discount,
+                    price: product.price,
+                    name: product.name
+                }
+            }));
+            setUserCart(userCart);
+        }
+        catch(error) {
+            navigate('/error');
+        }
     }
 
     useEffect(() => {
@@ -64,14 +78,9 @@ function Profile() {
     const handleLogout = () => {
         setToken('');
         setUserID('');
+        setCart([]);
         navigate('/home');
     }
-
-    const cart = [
-        {productName: 'Chén', img: chen, price: '325.000', discount: '0', quant: 1},
-        {productName: 'Chén', img: chen, price: '325.000', discount: '0', quant: 100},
-
-    ]
 
     const [tabName, setTabName] = useState('user-info-btn')
 
@@ -96,7 +105,7 @@ function Profile() {
         <div className={`${cx('wrapper')} d-flex `}>
             <div className={`${cx('user-nav-section')}`}>
                 <div className={`${cx('user-info')} mx-auto d-flex flex-column mb-4 text-center`}>
-                    <img src={userInfo.avatar}/>
+                    <img src={userInfo.avatar || userAvatar}/>
                     <h1>{userInfo.firstName} {userInfo.lastName}</h1>
                     <p>{userInfo.email}</p>
                 </div>
@@ -208,7 +217,7 @@ function Profile() {
                     <h2>Đơn hàng đang giao</h2>
                 </div>
                 <div className={`px-5`}>
-                    {cart.map((product) => <CartProductItem product={product}/>)}
+                    {userCart.map((product, index) => <OrderItem product={product} key={index}/>)}
                 </div>
             </div>
             <Helmet>

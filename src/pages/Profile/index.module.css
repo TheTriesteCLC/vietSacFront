@@ -116,17 +116,20 @@
 
 /* Cart */
 .product-wrapper {
-    max-width: 40% ;
+    max-width: 50% ;
 }
 
 .product-img {
     background-color: #FFD367;
     width: 135px;
     height: 135px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .product-img img {
-    width: 135px;
+    max-width: 135px;
 }
 
 .product-info h5 {

@@ -7,10 +7,13 @@
 .product-img {
     border-radius: 10px;
     border: 1px solid #9E1D26;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .product-img img {
-    width: 121px;
+    max-width: 121px;
 }
 
 .product-info {
@@ -26,6 +29,10 @@
     color: #9E1D26;
     font-size: 24px;
     font-weight: 700;
+}
+
+.product-delete img:hover {
+    cursor: pointer;
 }
 /* Cart */
 .cart-close:hover {
