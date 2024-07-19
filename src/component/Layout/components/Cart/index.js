@@ -10,21 +10,15 @@ import close from '../../../../assets/icon/closeRed.svg'
 
 import classNames from 'classnames/bind';
 import styles from './index.module.css';
-import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { floor } from 'lodash';
-import { getAllCarts } from '../../../../api/site';
-import { getProductDetailAPI } from '../../../../api/shop';
 import { useAuth } from '../../../../provider';
 // import { getUserCartAPI } from '../../../../api/site';
 
 const cx = classNames.bind(styles);
 
 function Cart() {
-    const navigate = useNavigate();
-
     const numberWithCommas = (x) => {
-
         return floor(x).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
 
@@ -36,11 +30,10 @@ function Cart() {
 
     const handleDelete = (cartID) => {
         console.log(cartID);
-        addToCart({})
-        setCart(cart.filter((cartItem) => cartItem.id !== cartID))
+        deleteItemFromCart(cartID);
     }
 
-    const { userID, setToken, setUserID, cart, setCart, addToCart } = useAuth();
+    const { cart, setCart, addToCart, deleteItemFromCart } = useAuth();
 
     const CartProductItem = ({product}) => {
         return (
@@ -70,7 +63,7 @@ function Cart() {
                     <h2 className={`mb-2`}>Giỏ hàng</h2>
                     <div className={`${cx('small-red-box')}`}></div>
                 </div>
-                {cart?.map((product) => (<CartProductItem product={product}/>))}
+                {cart?.map((product, index) => (<CartProductItem product={product} key={index}/>))}
                 <div className={`${cx('cart-footer')}`}>
                     <a href='/checkout'>
                         <button className={`btn-small prim-btn w-100 mb-3`}>

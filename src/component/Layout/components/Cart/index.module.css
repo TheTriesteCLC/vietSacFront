@@ -17,7 +17,7 @@
 }
 
 .product-info {
-    width: 320px;
+    width: 65%;
     height: 130px;
 }
 
@@ -25,7 +25,7 @@
     padding: 8px 18px;
     border-radius: 100px;
     border: 1px solid #9E1D26;
-    max-width: 60%;
+    max-width: 80%;
     color: #9E1D26;
     font-size: 24px;
     font-weight: 700;

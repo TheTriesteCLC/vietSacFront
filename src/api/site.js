@@ -13,6 +13,7 @@ const END_POINT = {
     USER_PROFILE: `${API_USER}/GetSingleID`,
 
     ALL_CARTS: `Cart/GetAllCarts`,
+    ADD_CART: `Cart/AddToCart`,
     DELETE_CART: `Cart/RemoveFromCart`,
 }
 
@@ -30,6 +31,10 @@ export const getUserInfo = (userID) => {
 
 export const getAllCarts = () => {
     return axiosSite.get(`${END_POINT.ALL_CARTS}`);
+}
+
+export const addToCart = (item) => {
+    return axiosSite.post(`${END_POINT.ADD_CART}`, item);
 }
 
 export const deleteCart = (cartID) => {

@@ -15,10 +15,13 @@ import ProductModal from "../../component/ProductModal";
 import RelatedProductItem from "../../component/RelatedProductItem";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getProductDetailAPI, getProductsAllAPI, getRelatedProductsAPI } from "../../api/shop";
+import { addToCart } from "../../api/site";
+import { useAuth } from "../../provider";
 
 const cx = classNames.bind(styles);
 
 function ProductDetail() {
+    const { cart, addItemToCart } = useAuth();
     const productID = useLocation().pathname.split('/').at(-1);
 
     const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -73,11 +76,16 @@ function ProductDetail() {
         setOpenModal(true);
     };
 
-    const handleAddToCart = () => {
+    const handleAddToCart = async () => {
         if(!isLoggedIn) {
             navigate('/login');
         }else {
-            console.log("::::addToCart");
+            const quantity = parseInt(document.getElementById('product-quant-input').value);
+            const newItem = {
+                productId: productID,
+                quantity
+            }
+            addItemToCart(newItem);
         }
     }
 

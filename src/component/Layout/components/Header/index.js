@@ -37,7 +37,6 @@ function Header({isTransparent}) {
 
     const handleOpenNav = () => {
         if(!isOpen) {
-            console.log(document.querySelector(`.${cx('navigation')}`));
             document.querySelector(`.${cx('navigation')}`).classList.remove(cx('close-nav'));
             document.querySelector(`.${cx('navigation')}`).classList.add(`${cx('open-nav')}`)
             setIsOpen(true);

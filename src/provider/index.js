@@ -1,6 +1,6 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { getAllCarts } from "../api/site";
+import { addToCart, deleteCart, getAllCarts } from "../api/site";
 import { getProductDetailAPI } from "../api/shop";
 
 const AuthContext = createContext();
@@ -9,7 +9,7 @@ const AuthProvider = ({ children }) => {
   // State to hold the authentication token
   const [token, setToken_] = useState(localStorage.getItem("token"));
   const [userID, setUserID_] = useState(localStorage.getItem("userID"));
-  const [cart, setCart_] = useState(JSON.parse(localStorage.getItem("cart")));
+  const [cart, setCart_] = useState(JSON.parse(localStorage.getItem("cart")) ? JSON.parse(localStorage.getItem("cart")) : []);
 
   // Function to set the authentication token
   const setToken = (newToken) => {
@@ -29,26 +29,43 @@ const AuthProvider = ({ children }) => {
   };
 
   const setCart = (newCart) => {
+    console.log(newCart);
     if(newCart.length === 0) {
       localStorage.removeItem('cart');
-    }else {
-      setCart_(newCart);
     }
+    setCart_(newCart);
   };
 
-  const addToCart = (newItem) => {
+  const addItemToCart = async (newItem) => {
+    const res = (await addToCart(newItem)).data;
+    const newItemData = (await getProductDetailAPI(newItem.productId)).data;
+
     const isItemInCart = cart.find((cartItem) => cartItem.productId === newItem.productId);
 
     if(isItemInCart) {
-      setCart_(
-        cart.map((cartItem) =>
-          cartItem.productId === newItem.productId
-            ? { ...cartItem, quantity: cartItem.quantity + newItem.quantity }
-            : cartItem
-        ));
+      const updatedCart = cart.map((cartItem) =>
+        cartItem.productId === newItem.productId
+          ? { ...cartItem, quantity: cartItem.quantity + newItem.quantity }
+          : cartItem);
+      setCart(updatedCart);
+      // localStorage.setItem("cart", JSON.stringify(updatedCart));
     }else {
-      setCart_([...cart, newItem]);
+      const newItemDetail = {
+        ...res,
+        image: newItemData.image,
+        discount: newItemData.discount,
+        name: newItemData.name,
+        price: newItemData.price
+      }
+      setCart([...cart, newItemDetail]);
+      // localStorage.setItem("cart", JSON.stringify([...cart, newItemDetail]));
     }
+  };
+
+  const deleteItemFromCart = async (itemID) => {
+    const res = await deleteCart(itemID);
+    console.log(res);
+    setCart(cart.filter((cartItem) => cartItem.id !== itemID))
   };
 
   const fetchData = async() => {
@@ -65,7 +82,6 @@ const AuthProvider = ({ children }) => {
                   name: product.name
               }
           }));
-          localStorage.setItem('cart',JSON.stringify(userCart));
           setCart(userCart);
       }
       catch(error) {
@@ -78,13 +94,16 @@ const AuthProvider = ({ children }) => {
       localStorage.setItem('token',token);
       localStorage.setItem('userID',userID);
       fetchData();
-      
     } else {
       localStorage.removeItem('token');
       localStorage.removeItem('userID');
       localStorage.removeItem('cart');
     }
   }, [token, userID]);
+
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }, [cart])
 
   // Memoized value of the authentication context
   const contextValue = useMemo(
@@ -96,7 +115,8 @@ const AuthProvider = ({ children }) => {
       cart, 
       setCart,
 
-      addToCart,
+      addItemToCart,
+      deleteItemFromCart
     }),
     [token, userID, cart]
   );
