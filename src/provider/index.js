@@ -85,7 +85,7 @@ const AuthProvider = ({ children }) => {
           setCart(userCart);
       }
       catch(error) {
-          console.log(error)
+        
       }
   }
 

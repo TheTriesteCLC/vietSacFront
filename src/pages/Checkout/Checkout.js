@@ -9,6 +9,7 @@ import { Formik } from "formik";
 import { Button, Radio, Space } from "antd";
 import { Input } from "formik-antd";
 import { floor } from 'lodash';
+import { useAuth } from '../../provider';
 
 const cx = classNames.bind(styles);
 
@@ -22,26 +23,26 @@ const CartProductItem = ({product}) => {
     <div className={`${cx('product-wrapper')} d-flex justify-content-between`}>
         <div className='d-flex'>
             <div className={`${cx('product-img')}`}>
-                <img src={product.productImg}/>
+                <img src={product.image}/>
             </div>
             <div className='ms-3'> 
-                <h5>{product.productName}</h5>
+                <h5>{product.name}</h5>
                 <div className={`${cx('small-red-box')}`}></div>
             </div>
         </div>
         <div className={`${cx('product-info')} d-flex flex-column justify-content-end align-items-end`}>
-            <h5 className={``}>x {product.quant}</h5>
+            <h5 className={``}>x {product.quantity}</h5>
             <h5 className={`${cx('product-price')} float-end`}>
-                {numberWithCommas((parseInt(product.price) * 
-                (1 - parseFloat(product.discount === 0 ? '100' : product.discount)/100)) * 1000)} VND
+                {numberWithCommas((product.price * 
+                (1 - parseFloat(product.discount)/100)))} VND
             </h5>
         </div>
     </div>)
 }
 
 function Checkout() {
-    const [cart, setCart] = useState([]);
     const [userInfo, setUserInfo] = useState({});
+    const {cart, setCart} = useAuth();
 
     // const fetchData = async() => {
     //     setCart(await getUserCartAPI());
@@ -75,9 +76,9 @@ function Checkout() {
 
     const shipCost = 30000;
 
-    const subtotal = cart.reduce((subtotal, product) => subtotal + parseInt(product.price) * product.quant * 1000, 0);
-    const discount = cart.reduce((discount, product) => discount + ((parseInt(product.price) * 
-        (parseFloat(product.discount)/100)) * 1000) * product.quant, 0);
+    const subtotal = cart.reduce((subtotal, product) => subtotal + product.price * product.quantity, 0);
+    const discount = cart.reduce((discount, product) => discount + ((product.price * 
+        (parseFloat(product.discount)/100))) * product.quantity, 0);
     const total = subtotal - discount
 
     const { checkout, setCheckout, next, prev } = useContext(CheckoutContext);
