@@ -16,10 +16,13 @@
     padding: 5px;
     min-width: 135px;
     min-height: 135px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .product-img img {
-    width: 135px;
+    max-width: 135px;
 }
 
 .product-info {

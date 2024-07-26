@@ -85,6 +85,7 @@ function ProductDetail() {
                 productId: productID,
                 quantity
             }
+            console.log(newItem);
             addItemToCart(newItem);
         }
     }

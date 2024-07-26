@@ -1,6 +1,6 @@
 import axios from "axios";
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { addToCart, deleteCart, getAllCarts } from "../api/site";
+import { addToCart, deleteCart, getAllCarts, getUserCarts } from "../api/site";
 import { getProductDetailAPI } from "../api/shop";
 
 const AuthContext = createContext();
@@ -29,7 +29,6 @@ const AuthProvider = ({ children }) => {
   };
 
   const setCart = (newCart) => {
-    console.log(newCart);
     if(newCart.length === 0) {
       localStorage.removeItem('cart');
     }
@@ -64,25 +63,26 @@ const AuthProvider = ({ children }) => {
 
   const deleteItemFromCart = async (itemID) => {
     const res = await deleteCart(itemID);
-    console.log(res);
     setCart(cart.filter((cartItem) => cartItem.id !== itemID))
   };
 
   const fetchData = async() => {
       try {
-          const allCartsData = await getAllCarts();
-          let userCart = allCartsData.filter((cart) => cart.userId === userID);
-          userCart = await Promise.all(userCart.map(async (cart) => {
-              const product = (await getProductDetailAPI(cart.productId)).data;
-              return {
-                  ...cart,
-                  image: product.image,
-                  discount: product.discount,
-                  price: product.price,
-                  name: product.name
-              }
-          }));
-          setCart(userCart);
+          // const allCartsData = await getAllCarts();
+          // let userCart = allCartsData.filter((cart) => cart.userId === userID);
+          // userCart = await Promise.all(userCart.map(async (cart) => {
+          //     const product = (await getProductDetailAPI(cart.productId)).data;
+          //     return {
+          //         ...cart,
+          //         image: product.image,
+          //         discount: product.discount,
+          //         price: product.price,
+          //         name: product.name
+          //     }
+          // }));
+          const userCartData = await getUserCarts();
+          console.log(userCartData);
+          setCart(userCartData);
       }
       catch(error) {
         

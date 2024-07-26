@@ -10,11 +10,17 @@ import { postSignUpUser } from "../../api/site";
 import { useNavigate } from "react-router-dom";
 
 const userInfoIntitialState = {
-  'username': '',
+  'userName': '',
   'password': '',
   'email': '',
   'role_id': '1',
   'phone': '',
+  'firstName': '',
+  'lastName': '',
+  'dayDOB': '',
+  'monthDOB': '',
+  'yearDOB': '',
+  'gender': '',
   'address': ''
 }
 
@@ -41,12 +47,16 @@ const Signup = () => {
 
     async function createNewUser() {
       const sendUserInfo = {
-        'username': userInfo.email,
+        'userName': userInfo.email,
         'password': userInfo.password,
         'email': userInfo.email,
-        'role_id': '1',
-        'phone': userInfo.yearDOB,
-        'address': userInfo.gender
+        'role_id': '2',
+        'phone': 'unknown',
+        'firstName': userInfo.firstName,
+        'lastName': userInfo.lastName,
+        // 'dob': `${userInfo.dayDOB}/${userInfo.monthDOB}/${userInfo.yearDOB}`,
+        'gender': userInfo.gender,
+        'address': 'unknown'
       }
       await postSignUpUser(sendUserInfo)
         .then(res => {

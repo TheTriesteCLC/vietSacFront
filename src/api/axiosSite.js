@@ -3,7 +3,7 @@ import axios from "axios";
 const instance = axios.create({
     // baseURL: process.env.REACT_APP_POSTMAN,
     baseURL: process.env.REACT_APP_VIETSAC,
-    timeout: 3000,
+    timeout: 5000,
 });
 
 // Set the AUTH token for any request

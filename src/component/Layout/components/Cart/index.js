@@ -63,16 +63,21 @@ function Cart() {
                     <h2 className={`mb-2`}>Giỏ hàng</h2>
                     <div className={`${cx('small-red-box')}`}></div>
                 </div>
-                {cart?.map((product, index) => (<CartProductItem product={product} key={index}/>))}
+                {cart.length !== 0 ? 
+                cart?.map((product, index) => (<CartProductItem product={product} key={index}/>))
+                : <p className={`${cx('cart-noti')}`}>Hiện chưa có sản phẩm nào trong giỏ hàng</p>}
                 <div className={`${cx('cart-footer')}`}>
-                    <a href='/checkout'>
+                    {cart.length !== 0 ? <a href='/checkout'>
                         <button className={`btn-small prim-btn w-100 mb-3`}>
                             THANH TOÁN NGAY
                         </button>
+                    </a> : <></>}
+                    <a href='/shop'>
+                        <button className={`btn-small sec-btn w-100`}>
+                            {/* XEM GIỎ HÀNG */}
+                            TIẾP TỤC MUA HÀNG
+                        </button>
                     </a>
-                    <button className={`btn-small sec-btn w-100`}>
-                        XEM GIỎ HÀNG
-                    </button>
                 </div>
             </div>
         </Box>

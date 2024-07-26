@@ -54,5 +54,11 @@
 }
 
 .cart-footer {
-    padding: 80px 40px 0 40px;
+    padding: 50px 40px 0 40px;
+}
+
+.cart-noti {
+    font-size: 20px;
+    font-weight: 500;
+    padding: 0 16px;
 }

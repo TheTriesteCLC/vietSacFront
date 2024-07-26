@@ -10,6 +10,8 @@ import { Button, Radio, Space } from "antd";
 import { Input } from "formik-antd";
 import { floor } from 'lodash';
 import { useAuth } from '../../provider';
+import { checkoutCart, getUserInfo } from '../../api/site';
+import { useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
@@ -25,7 +27,7 @@ const CartProductItem = ({product}) => {
             <div className={`${cx('product-img')}`}>
                 <img src={product.image}/>
             </div>
-            <div className='ms-3'> 
+            <div className='ms-3'>
                 <h5>{product.name}</h5>
                 <div className={`${cx('small-red-box')}`}></div>
             </div>
@@ -41,17 +43,7 @@ const CartProductItem = ({product}) => {
 }
 
 function Checkout() {
-    const [userInfo, setUserInfo] = useState({});
-    const {cart, setCart} = useAuth();
-
-    // const fetchData = async() => {
-    //     setCart(await getUserCartAPI());
-    //     setUserInfo(await getUserInfoAPI());
-    // }
-
-    // useEffect(() => {
-    //     fetchData();
-    // }, [])
+    const { checkout, setCheckout, cart, next, prev } = useContext(CheckoutContext);
 
     const shippingOptions = [
         {
@@ -72,16 +64,15 @@ function Checkout() {
         {
             value: 'bank', text: 'Thanh toán bằng ngân hàng'
         }
-    ]
+    ];
 
     const shipCost = 30000;
 
     const subtotal = cart.reduce((subtotal, product) => subtotal + product.price * product.quantity, 0);
     const discount = cart.reduce((discount, product) => discount + ((product.price * 
         (parseFloat(product.discount)/100))) * product.quantity, 0);
-    const total = subtotal - discount
+    const total = subtotal - discount + shipCost;
 
-    const { checkout, setCheckout, next, prev } = useContext(CheckoutContext);
     return (
         <Formik
         initialValues={checkout}
@@ -142,29 +133,29 @@ function Checkout() {
                                 <div className={`${cx('ship-info-inputs')} py-4`}>
                                     <div className={`${cx('input-ship-wrapper')} ${errors.lastName && "input-error"} d-flex flex-column`}>
                                         <label className={cx('input-title')}>Email *</label>
-                                        <Input name={"email"} className={cx('info-input')} placeholder="Nhập email của bạn" value={userInfo.email}/>
+                                        <Input name={"email"} className={cx('info-input')} placeholder="Nhập email của bạn"/>
                                         <p className={cx('error-feedback')}>{errors.email}</p>
                                     </div> 
                                     <div className={`${cx('input-col')} d-flex justify-content-between`}>
                                         <div className={`${cx('input-ship-wrapper')} ${errors.lastName && "input-error"} d-flex flex-column`}>
                                             <label className={cx('input-title')}>Họ *</label>
-                                            <Input name={"lastName"} className={cx('info-input')} placeholder="Nhập họ của bạn" value={userInfo.lastName}/>
+                                            <Input name={"lastName"} className={cx('info-input')} placeholder="Nhập họ của bạn"/>
                                             <p className={cx('error-feedback')}>{errors.fisrtName}</p>
                                         </div>
                                         <div className={`${cx('input-ship-wrapper')} ${errors.lastName && "input-error"} d-flex flex-column`}>
                                             <label className={cx('input-title')}>Tên *</label>
-                                            <Input name={"firstName"} className={cx('info-input')} placeholder="Nhập tên của bạn" value={userInfo.firstName}/>
+                                            <Input name={"firstName"} className={cx('info-input')} placeholder="Nhập tên của bạn"/>
                                             <p className={cx('error-feedback')}>{errors.lastName}</p>
                                         </div>
                                     </div>
                                     <div className={`${cx('input-ship-wrapper')} ${errors.lastName && "input-error"} d-flex flex-column`}>
                                         <label className={cx('input-title')}>Địa chỉ *</label>
-                                        <Input name={"address"} className={cx('info-input')} placeholder="Nhập địa chỉ của bạn" value={userInfo.address}/>
+                                        <Input name={"address"} className={cx('info-input')} placeholder="Nhập địa chỉ của bạn" />
                                         <p className={cx('error-feedback')}>{errors.address}</p>
                                     </div>
                                     <div className={`${cx('input-ship-wrapper')} ${errors.lastName && "input-error"} d-flex flex-column`}>
                                         <label className={cx('input-title')}>Số điện thoại *</label>
-                                        <Input name={"phone"} className={cx('info-input')} placeholder="Nhập số điện thoại của bạn" value={userInfo.phone}/>
+                                        <Input name={"phone"} className={cx('info-input')} placeholder="Nhập số điện thoại của bạn" />
                                         <p className={cx('error-feedback')}>{errors.phone}</p>
                                     </div>
                                     <div className={`${cx('input-select')} my-2`}>

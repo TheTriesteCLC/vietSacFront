@@ -136,7 +136,7 @@ const Routes = () => {
             </FixedHeaderLayout>
           },
           {
-            path: '/user',
+            path: '/thankyou',
             element: 
             <NoFooterLayout>
               <Thankyou/>
